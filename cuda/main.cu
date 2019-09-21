@@ -7,8 +7,8 @@
 
 #define checkCudaErrors(val) check_cuda((val), #val, __FILE__, __LINE__)
 
-#define RESOLUTION 2
-#define SAMPLES 5000
+#define RESOLUTION 1
+#define SAMPLES 8000
 
 
 void check_cuda(cudaError_t result, 
@@ -155,7 +155,7 @@ __global__ void render(vec3* fb,
     col[0] = sqrt(col[0]);
     col[1] = sqrt(col[1]);
     col[2] = sqrt(col[2]);
-    fb[pixel_index] = col;
+    fb[pixel_index] = clip(col);
 }
 
 

@@ -109,6 +109,19 @@ __host__ __device__ inline vec3 cross(const vec3& v1, const vec3& v2){
                 (v1.e[0]*v2.e[1] - v1.e[1]*v2.e[0]));
 }
 
+__host__ __device__ float clip_single(float f, int min, int max){
+    if(f > max) return max;
+    else if(f < min) return min;
+    return f;
+}
+
+__host__ __device__ inline vec3 clip(const vec3& v, int min=0.0f, int max=1.0f){
+    vec3 vr(0, 0, 0);
+    vr[0] = clip_single(v[0], min, max);
+    vr[1] = clip_single(v[1], min, max);
+    vr[2] = clip_single(v[2], min, max);
+    return vr;
+}
 
 __host__ __device__ inline vec3& vec3::operator+=(const vec3 &v){
     e[0]  += v.e[0];
