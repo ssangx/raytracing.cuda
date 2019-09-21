@@ -20,6 +20,7 @@ public:
     // origin and direction
     vec3 __origin;
     vec3 __direction;
+    
     // the time the ray exist at 
     float __time;
 };

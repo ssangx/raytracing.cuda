@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <iostream>
 
+
 class vec3  {
 public:
     __host__ __device__ vec3() {}

@@ -2,12 +2,12 @@
 #include <curand_kernel.h>
 
 #include "ray.h"
+#include "bvh.h"
 #include "box.h"
 #include "vec3.h"
 #include "float.h"
 #include "sphere.h"
 #include "camera.h"
-#include "bvh_node.h"
 #include "material.h"
 #include "rectangle.h"
 #include "transform.h"

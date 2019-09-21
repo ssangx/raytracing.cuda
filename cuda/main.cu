@@ -23,6 +23,7 @@ void check_cuda(cudaError_t result,
     }
 }
 
+
 __device__ vec3 color(const Ray& r, 
                       Hitable **world, 
                       int depth,
@@ -135,14 +136,15 @@ __global__ void render(vec3* fb,
                        Camera** camera,
                        curandState* state,
                        int nx, 
-                       int ny){
+                       int ny,
+                       int samples){
     int x = threadIdx.x + blockIdx.x * blockDim.x;
     int y = threadIdx.y + blockIdx.y * blockDim.y;
     if((x >= nx) || (y >= ny)) return;
     
     int pixel_index = y * nx + x;   
 
-    int ns = SAMPLES;
+    int ns = samples;
     vec3 col(0, 0, 0);
     for(int i = 0; i < ns; i++){
         float u = float(x + rand(&(state[pixel_index]))) / float(nx);
@@ -195,7 +197,7 @@ int main(){
     checkCudaErrors(cudaGetLastError());
     checkCudaErrors(cudaDeviceSynchronize());
 
-    render <<<blocks, threads>>>(fb, world, camera, curand_state, nx, ny);
+    render <<<blocks, threads>>>(fb, world, camera, curand_state, nx, ny, SAMPLES);
     checkCudaErrors(cudaGetLastError());
     checkCudaErrors(cudaDeviceSynchronize());
 
