@@ -7,8 +7,8 @@
 
 #define checkCudaErrors(val) check_cuda((val), #val, __FILE__, __LINE__)
 
-#define RESOLUTION 4
-#define SAMPLES 1000
+#define RESOLUTION 1
+#define SAMPLES 100
 
 
 void check_cuda(cudaError_t result, 
@@ -51,7 +51,6 @@ __device__ vec3 color_nolight(const Ray& r,
     if((*world)->hit(r, 0.001, MAXFLOAT, rec)){
         Ray scattered;
         vec3 attenuation;
-        vec3 emitted = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
         if(depth < 30 && rec.mat_ptr->scatter(r, rec, attenuation, scattered, state)){
             return attenuation * color(scattered, world, depth + 1, state);
         }
@@ -83,11 +82,18 @@ __global__ void build_scene(Hitable** obj_list,
         // cornell_smoke_scene(obj_list, world);
         // final_scene(obj_list, world, state);
 
-        vec3 lookfrom(278, 278, -800);
-        vec3 lookat(278, 278, 0);
+        // vec3 lookfrom(278, 278, -800);
+        // vec3 lookat(278, 278, 0);
+        // float dist_to_focus = 10.0;
+        // float aperture = 0.0;
+        // float vfov = 40.0;
+
+        vec3 lookfrom(13, 2, 3);
+        vec3 lookat(0, 0, 0);
         float dist_to_focus = 10.0;
         float aperture = 0.0;
-        float vfov = 40.0;
+        float vfov = 20.0;
+
         *camera = new Camera(lookfrom, 
                              lookat, 
                              vec3(0, 1, 0), 
@@ -154,7 +160,7 @@ __global__ void render(vec3* fb,
 
 
 int main(){
-    std::freopen("image.ppm", "w", stdout);
+    std::freopen("images/image.ppm", "w", stdout);
 
     int nx = 1024 * RESOLUTION;
     int ny = 512  * RESOLUTION;
