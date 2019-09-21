@@ -8,7 +8,7 @@
 #define checkCudaErrors(val) check_cuda((val), #val, __FILE__, __LINE__)
 
 #define RESOLUTION 1
-#define SAMPLES 100
+#define SAMPLES 1000
 
 
 void check_cuda(cudaError_t result, 
@@ -52,7 +52,7 @@ __device__ vec3 color_nolight(const Ray& r,
         Ray scattered;
         vec3 attenuation;
         if(depth < 30 && rec.mat_ptr->scatter(r, rec, attenuation, scattered, state)){
-            return attenuation * color(scattered, world, depth + 1, state);
+            return attenuation * color_nolight(scattered, world, depth + 1, state);
         }
         else {
             return vec3(0, 0, 0);
