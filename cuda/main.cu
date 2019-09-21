@@ -7,8 +7,8 @@
 
 #define checkCudaErrors(val) check_cuda((val), #val, __FILE__, __LINE__)
 
-#define RESOLUTION 1
-#define SAMPLES 1000
+#define RESOLUTION 2
+#define SAMPLES 5000
 
 
 void check_cuda(cudaError_t result, 
@@ -75,25 +75,23 @@ __global__ void build_scene(Hitable** obj_list,
                             int cnt){
     if(threadIdx.x == 0 && blockIdx.x == 0){
         
-        random_scene(obj_list, world, state);
+        // random_scene(obj_list, world, state);
         // simple_light_scene(obj_list, world);
-        // cornell_box_bvh_scene(obj_list, world, state);
-        // boxlist_bvh_scene(obj_list, world, state);
-        // cornell_box_scene(obj_list, world);
+        cornell_box_scene(obj_list, world);
         // cornell_smoke_scene(obj_list, world);
         // final_scene(obj_list, world, state);
 
-        // vec3 lookfrom(278, 278, -800);
-        // vec3 lookat(278, 278, 0);
-        // float dist_to_focus = 10.0;
-        // float aperture = 0.0;
-        // float vfov = 40.0;
-
-        vec3 lookfrom(13, 2, 3);
-        vec3 lookat(0, 0, 0);
+        vec3 lookfrom(278, 278, -800);
+        vec3 lookat(278, 278, 0);
         float dist_to_focus = 10.0;
         float aperture = 0.0;
-        float vfov = 20.0;
+        float vfov = 40.0;
+
+        // vec3 lookfrom(13, 2, 3);
+        // vec3 lookat(0, 0, 0);
+        // float dist_to_focus = 10.0;
+        // float aperture = 0.0;
+        // float vfov = 20.0;
 
         *camera = new Camera(lookfrom, 
                              lookat, 
@@ -150,8 +148,8 @@ __global__ void render(vec3* fb,
         float u = float(x + rand(&(state[pixel_index]))) / float(nx);
         float v = float(y + rand(&(state[pixel_index]))) / float(ny);
         Ray r = (*camera)->get_ray(u, v, state);
-        // col += color(r, world, 0, &(state[pixel_index]));
-        col += color_nolight(r, world, 0, &(state[pixel_index]));
+        col += color(r, world, 0, &(state[pixel_index]));
+        // col += color_nolight(r, world, 0, &(state[pixel_index]));
     }
     col /= float(ns);
     col[0] = sqrt(col[0]);
