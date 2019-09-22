@@ -7,7 +7,7 @@
 
 #define checkCudaErrors(val) check_cuda((val), #val, __FILE__, __LINE__)
 
-#define RESOLUTION 1
+#define RESOLUTION 4
 #define SAMPLES 8000
 
 
