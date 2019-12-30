@@ -1,7 +1,7 @@
 #ifndef RECTANGLEH
 #define RECTANGLEH
 
-#include "hitable.h"
+#include "hitable/hitable.h"
 
 
 /**

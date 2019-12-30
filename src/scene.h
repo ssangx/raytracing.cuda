@@ -1,17 +1,17 @@
 #include <curand.h>
 #include <curand_kernel.h>
 
-#include "ray.h"
+#include "core/ray.h"
 #include "bvh.h"
-#include "box.h"
-#include "vec3.h"
+#include "shapes/box.h"
+#include "core/vec3.h"
 #include "float.h"
-#include "sphere.h"
-#include "camera.h"
-#include "material.h"
-#include "rectangle.h"
+#include "shapes/sphere.h"
+#include "core/camera.h"
+#include "material/material.h"
+#include "shapes/rectangle.h"
 #include "transform.h"
-#include "hitable_list.h"
+#include "hitable/hitable_list.h"
 #include "constant_medium.h"    
 
 

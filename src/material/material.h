@@ -1,7 +1,7 @@
-#ifndef MATERIALH
-#define MATERIALH
+#ifndef MATERIAL_H
+#define MATERIAL_H
 
-#include "hitable.h"
+#include "hitable/hitable.h"
 #include "texture.h"
 
 
@@ -43,7 +43,7 @@ __device__ bool refract(const vec3& v, const vec3& n, float ni_over_nt, vec3& re
 
 // Abstract class for material
 
-class Material{
+class Material {
 public: 
     __device__ virtual bool scatter(const Ray& r_in, 
                                     const HitRecord& rec, 
@@ -61,6 +61,7 @@ public:
 class Lambertian: public Material{
 public:
     __device__ Lambertian(Texture* a): albedo(a) {}
+
     __device__ virtual bool scatter(const Ray& r_in, 
                                     const HitRecord& rec, 
                                     vec3& attenuation,
@@ -76,11 +77,10 @@ public:
 };
 
 
-class Metal: public Material{
+class Metal: public Material {
 public: 
     __device__ Metal(const vec3& a, float f): albedo(a) {
-        if(f < 1) fuzz = f; 
-        else fuzz = 1;
+        fuzz = f < 1 ? f : 1;
     }
 
     __device__ virtual bool scatter(const Ray& r_in, 
@@ -102,6 +102,7 @@ public:
 class Dielectric: public Material{
 public: 
     __device__ Dielectric(float ri): ref_idx(ri) {}
+    
     __device__ virtual bool scatter(const Ray& r_in, 
                                     const HitRecord& rec, 
                                     vec3& attenuation, 
@@ -177,4 +178,4 @@ public:
 };
 
 
-#endif
+#endif  /* MATERIAL_H */

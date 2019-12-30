@@ -4,6 +4,9 @@
 #include "ray.h"
 
 
+/* Camera */
+
+
 __device__ vec3 random_in_unit_disk(curandState* state){
     vec3 p;
     do{
@@ -64,8 +67,9 @@ public:
                       float aperture,   
                       float focus_dist,
                       float t0,
-                      float t1) : Camera(vec3 lookfrom,  vec3 lookat, vec3 vup, float vfov, 
-                                         float aspect, float aperture, float focus_dist){
+                      float t1) : Camera(lookfrom, lookat, vup, vfov, 
+                                         aspect, aperture, focus_dist){
+
         time0 = t0;
         time1 = t1;
     }

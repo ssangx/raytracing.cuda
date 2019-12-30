@@ -1,8 +1,8 @@
 #ifndef CONSTANTMEDIUMH
 #define CONSTANTMEDIUMH
 
-#include "hitable.h"
-#include "material.h"
+#include "hitable/hitable.h"
+#include "material/material.h"
 
 
 class ConstantMedium: public Hitable{

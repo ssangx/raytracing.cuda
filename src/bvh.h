@@ -1,8 +1,9 @@
-#ifndef BHVNODEH
-#define BHVNODEH
+#ifndef BHVNODE_H
+#define BHVNODE_H
 
 #include <thrust/sort.h>
-#include "hitable.h"
+
+#include "hitable/hitable.h"
 
 
 struct BoxCompare{
@@ -134,4 +135,4 @@ __device__ bool BVHNode::hit(const Ray& r,
     return false;
 }
 
-#endif
+#endif  /* BHVNODE_H */

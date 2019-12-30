@@ -1,9 +1,9 @@
 #ifndef BOXH
 #define BOXH
 
-#include "material.h"
-#include "rectangle.h"
-#include "hitable_list.h"
+#include "material/material.h"
+#include "shapes/rectangle.h"
+#include "hitable/hitable_list.h"
 
 
 class Box: public Hitable{

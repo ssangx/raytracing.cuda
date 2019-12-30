@@ -1,7 +1,7 @@
 #ifndef TRANSFORMH
 #define TRANSFORMH
 
-#include "hitable.h"
+#include "hitable/hitable.h"
 #include <float.h>
 
 

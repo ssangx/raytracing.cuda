@@ -2,7 +2,7 @@
 #define AABB_H
 
 #include "ray.h"
-
+#include "float.h"
 
 __device__ inline float ffmin(float a, float b) {return a < b ? a : b;}
 __device__ inline float ffmax(float a, float b) {return a > b ? a : b;}
@@ -14,18 +14,18 @@ class AABB{
 public:
 
     __device__ AABB() {
-        float minNum = std::numeric_limits<float>::lowest();
-        float maxNum = std::numeric_limits<float>::max();
-        ptMin = vec3(maxNum, maxNum, maxNum);
-        ptMax = vec3(minNum, minNum, minNum);
+        float minNum = FLT_MIN;
+        float maxNum = FLT_MAX;
+        _min = vec3(maxNum, maxNum, maxNum);
+        _max = vec3(minNum, minNum, minNum);
     }
 
     // bbox of a point
-    __device__ AABB(const v3c3& p) : ptMin(p), ptMax(p) {}
+    __device__ AABB(const vec3& p) : _min(p), _max(p) {}
 
     // regular constructor
     // TODO: add sanity check
-    __device__ AABB(const vec3& p1, const vec3& p2) : ptMin(p1), ptMax(p2) {}
+    __device__ AABB(const vec3& p1, const vec3& p2) : _min(p1), _max(p2) {}
 
     __device__ bool hit(const Ray& r, 
                         float t_min, 
@@ -48,10 +48,10 @@ public:
     // TODO: get union of two aabb
     __device__ AABB getUnion(const AABB& aabb) const { return AABB(); }
 
-    __device__ vec3 ptMin() const { return ptMin; }
-    __device__ vec3 ptMax() const { return ptMax; }
+    __device__ vec3 min() const { return _min; }
+    __device__ vec3 max() const { return _max; }
 
-    vec3 ptMin, ptMax;
+    vec3 _min, _max;
 };
 
 

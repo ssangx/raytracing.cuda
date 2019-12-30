@@ -1,7 +1,7 @@
 #ifndef TEXTUREH
 #define TEXTUREH
 
-#include "vec3.h"
+#include "core/vec3.h"
 
 
 class Texture {

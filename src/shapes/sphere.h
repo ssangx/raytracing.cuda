@@ -1,7 +1,7 @@
-#ifndef SPHEREH
-#define SPHEREH
+#ifndef SPHERE_H
+#define SPHERE_H
 
-#include "hitable.h"
+#include "hitable/hitable.h"
 
 
 // Sphere primitive
@@ -151,4 +151,4 @@ __device__ bool MovingSphere::hit(const Ray& r,
 }
 
 
-#endif
+#endif  /* SPHERE_H */
