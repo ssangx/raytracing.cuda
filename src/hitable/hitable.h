@@ -1,5 +1,5 @@
-#ifndef HITABLEH
-#define HITABLEH
+#ifndef HITABLE_H
+#define HITABLE_H
 
 #include "core/ray.h"
 #include "core/aabb.h"
@@ -18,7 +18,8 @@ struct HitRecord{
 
 
 // The abstract class for all object that a ray can hit
-// two function, hit and bounding_box 
+// two functions, hit and bounding_box 
+
 class Hitable {
 public:
     __device__ virtual bool hit(const Ray& r, 
@@ -58,4 +59,4 @@ public:
 };
 
 
-#endif
+#endif  /* HITABLE_H */

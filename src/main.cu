@@ -7,14 +7,14 @@
 
 #define checkCudaErrors(val) check_cuda((val), #val, __FILE__, __LINE__)
 
-#define RESOLUTION 0.5
-#define SAMPLES 100
+#define RESOLUTION 1
+#define SAMPLES  100
 
 
 void check_cuda(cudaError_t result, 
                 char const *const func, 
                 const char *const file, 
-                int const line){
+                int const line) {
     if(result){
         std::cerr << "CUDA error = "<< static_cast<unsigned int>(result) << " at " <<
         file << ":" << line << " '" << func << "' \n";
@@ -33,7 +33,7 @@ __device__ vec3 shade(const Ray& r,
         Ray scattered;
         vec3 attenuation;
         vec3 emitted = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
-        if(depth < 30 && rec.mat_ptr->scatter(r, rec, attenuation, scattered, state)){
+        if(depth < 15 && rec.mat_ptr->scatter(r, rec, attenuation, scattered, state)){
             return emitted + attenuation * shade(scattered, world, depth + 1, state);
         }else{
             return emitted;
@@ -52,7 +52,7 @@ __device__ vec3 shade_nolight(const Ray& r,
     if((*world)->hit(r, 0.001, MAXFLOAT, rec)){
         Ray scattered;
         vec3 attenuation;
-        if(depth < 30 && rec.mat_ptr->scatter(r, rec, attenuation, scattered, state)){
+        if(depth < 15 && rec.mat_ptr->scatter(r, rec, attenuation, scattered, state)){
             return attenuation * shade_nolight(scattered, world, depth + 1, state);
         }
         else {
@@ -73,11 +73,11 @@ __global__ void build_scene(Hitable** obj_list,
                             int nx,
                             int ny,
                             int cnt){
-    if(threadIdx.x == 0 && blockIdx.x == 0){
+    if(threadIdx.x == 0 && blockIdx.x == 0) {
         
-        random_scene(obj_list, world, state);
+        // random_scene(obj_list, world, state);
         // simple_light_scene(obj_list, world);
-        // cornell_box_scene(obj_list, world);
+        cornell_box_scene(obj_list, world);
         // cornell_smoke_scene(obj_list, world);
         // final_scene(obj_list, world, state);
 
@@ -94,21 +94,21 @@ __global__ void build_scene(Hitable** obj_list,
         // float vfov = 20.0;
 
         *camera = new MotionCamera(lookfrom, 
-                             lookat, 
-                             vec3(0, 1, 0), 
-                             vfov, 
-                             float(nx) / float(ny), 
-                             aperture, 
-                             dist_to_focus,
-                             0.0,
-                             1.0);
+                                lookat, 
+                                vec3(0, 1, 0), 
+                                vfov, 
+                                float(nx) / float(ny), 
+                                aperture, 
+                                dist_to_focus,
+                                0.0,
+                                1.0);
     }
 }
 
 
 __global__ void random_init(int nx, 
                             int ny, 
-                            curandState *state){
+                            curandState *state) {
     int x = threadIdx.x + blockIdx.x * blockDim.x;
     int y = threadIdx.y + blockIdx.y * blockDim.y;
     if((x >= nx) || (y >= ny)) return;
@@ -129,18 +129,18 @@ __global__ void destroy(Hitable** obj_list,
 }
 
 
-__global__ void render(vec3* fb,
+__global__ void render(vec3* colorBuffer,
                        Hitable** world,
                        Camera** camera,
                        curandState* state,
                        int nx, 
                        int ny,
-                       int samples){
+                       int samples) {
     int x = threadIdx.x + blockIdx.x * blockDim.x;
     int y = threadIdx.y + blockIdx.y * blockDim.y;
     if((x >= nx) || (y >= ny)) return;
     
-    int pixel_index = y * nx + x;   
+    int pixel_index = y * nx + x;
 
     int ns = samples;
     vec3 col(0, 0, 0);
@@ -155,11 +155,12 @@ __global__ void render(vec3* fb,
     col[0] = sqrt(col[0]);
     col[1] = sqrt(col[1]);
     col[2] = sqrt(col[2]);
-    fb[pixel_index] = clip(col);
+
+    colorBuffer[pixel_index] = clip(col);
 }
 
 
-int main(){
+int main() {
     std::freopen("images/image.ppm", "w", stdout);
 
     int nx = 1024 * RESOLUTION;
@@ -169,12 +170,12 @@ int main(){
     
     int num_pixel = nx * ny;
 
-    // final buffer
-    vec3 *fb;
-    checkCudaErrors(cudaMallocManaged((void**)& fb, num_pixel*sizeof(vec3)));
+    // color buffer
+    vec3 *colorBuffer;
+    checkCudaErrors(cudaMallocManaged((void**)& colorBuffer, num_pixel*sizeof(vec3)));
 
     curandState* curand_state;
-    checkCudaErrors(cudaMallocManaged((void**)&curand_state, num_pixel*sizeof(curandState)));
+    checkCudaErrors(cudaMallocManaged((void**)& curand_state, num_pixel*sizeof(curandState)));
 
     // build world
     int obj_cnt = 488;
@@ -195,7 +196,7 @@ int main(){
     checkCudaErrors(cudaGetLastError());
     checkCudaErrors(cudaDeviceSynchronize());
 
-    render <<<blocks, threads>>>(fb, world, camera, curand_state, nx, ny, SAMPLES);
+    render <<<blocks, threads>>>(colorBuffer, world, camera, curand_state, nx, ny, SAMPLES);
     checkCudaErrors(cudaGetLastError());
     checkCudaErrors(cudaDeviceSynchronize());
 
@@ -203,9 +204,9 @@ int main(){
     for(int i = ny - 1; i >= 0; i--){
         for(int j = 0; j < nx; j++){
             size_t pixel_index = i * nx + j;
-            int ir = int(255.99 * fb[pixel_index].r());
-            int ig = int(255.99 * fb[pixel_index].g());
-            int ib = int(255.99 * fb[pixel_index].b());
+            int ir = int(255.99 * colorBuffer[pixel_index].r());
+            int ig = int(255.99 * colorBuffer[pixel_index].g());
+            int ib = int(255.99 * colorBuffer[pixel_index].b());
             std::cout << ir << " " << ig << " " << ib << "\n";
         }
     }
@@ -218,7 +219,7 @@ int main(){
     checkCudaErrors(cudaFree(obj_list));
     checkCudaErrors(cudaFree(camera));
     checkCudaErrors(cudaFree(curand_state));
-    checkCudaErrors(cudaFree(fb));
+    checkCudaErrors(cudaFree(colorBuffer));
 
     cudaDeviceReset();
 }

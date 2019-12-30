@@ -1,5 +1,5 @@
-#ifndef HITABLELISTH
-#define HITABLELISTH
+#ifndef HITABLELIST_H
+#define HITABLELIST_H
 
 #include "hitable.h"
  
@@ -60,4 +60,4 @@ __device__ bool HitableList::bounding_box(float t0,
 }
 
 
-#endif
+#endif  /* HITABLELIST_H */

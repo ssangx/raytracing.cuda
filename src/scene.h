@@ -1,18 +1,23 @@
 #include <curand.h>
 #include <curand_kernel.h>
 
-#include "core/ray.h"
-#include "bvh.h"
-#include "shapes/box.h"
-#include "core/vec3.h"
 #include "float.h"
-#include "shapes/sphere.h"
-#include "core/camera.h"
-#include "material/material.h"
-#include "shapes/rectangle.h"
+
+#include "bvh.h"
 #include "transform.h"
-#include "hitable/hitable_list.h"
-#include "constant_medium.h"    
+#include "constant_medium.h" 
+
+#include "core/ray.h"
+#include "core/vec3.h"
+#include "core/camera.h"
+#include "shapes/box.h"
+#include "shapes/sphere.h"
+#include "shapes/rectangle.h"
+#include "material/material.h"
+#include "hitable/hitable_list.h"   
+
+
+#define RAND rand(state)
 
 
 __device__ float rand(curandState *state){
@@ -20,6 +25,7 @@ __device__ float rand(curandState *state){
 }
 
 
+/* It works */
 __device__ void random_scene(Hitable **list, 
                              Hitable **world, 
                              curandState *state){
@@ -32,8 +38,8 @@ __device__ void random_scene(Hitable **list,
             float choose_mat = rand(state);
             vec3 center(a + 0.9 * rand(state), 0.2, b + 0.9 * rand(state));
             if(choose_mat < 0.8f) {
-                // list[i++] = new MovingSphere(center, center+vec3(0, 0.5*rand(state), 0), 0.0, 1.0, 0.2,
-                //                              new Lambertian(new ConstantTexture(vec3(rand(state), rand(state), rand(state)))));
+                list[i++] = new MovingSphere(center, center+vec3(0, 0.5*rand(state), 0), 0.0, 1.0, 0.2,
+                                             new Lambertian(new ConstantTexture(vec3(rand(state), rand(state), rand(state)))));
                 continue;
             }
             else if(choose_mat < 0.95f) {
@@ -41,7 +47,7 @@ __device__ void random_scene(Hitable **list,
                                        new Metal(vec3(0.5f*(1.0f+rand(state)), 
                                                       0.5f*(1.0f+rand(state)), 
                                                       0.5f*(1.0f+rand(state))), 
-                                                    0.5f*rand(state)));
+                                                      0.5f*rand(state)));
             }
             else {
                 list[i++] = new Sphere(center, 0.2, new Dielectric(rand(state)*2));
@@ -55,6 +61,7 @@ __device__ void random_scene(Hitable **list,
 }
 
 
+/* It works */
 __device__ void simple_light_scene(Hitable **list, 
                                    Hitable **world){
     Texture *checker = new CheckerTexture(new ConstantTexture(vec3(0.8, 0.3, 0.1)),
@@ -68,6 +75,7 @@ __device__ void simple_light_scene(Hitable **list,
 }
 
 
+/* It works */
 __device__ void cornell_box_scene(Hitable **list, 
                                   Hitable **world){
     int i = 0; 
@@ -93,6 +101,7 @@ __device__ void cornell_box_scene(Hitable **list,
 }
 
 
+/* It works */
 __device__ void cornell_smoke_scene(Hitable **list, 
                                     Hitable **world){
     int i = 0; 
@@ -117,10 +126,10 @@ __device__ void cornell_smoke_scene(Hitable **list,
 }
 
 
+/* It does not work now. BVH does not work */
 __device__ void final_scene(Hitable **list, 
                             Hitable **world, 
                             curandState *state){
-    // NOTE: does not work now
     int nb = 20;
     Hitable** boxlist1 = new Hitable*[1000];
     Hitable** boxlist2 = new Hitable*[1000];
