@@ -1,0 +1,1 @@
+nvcc main.cu -o raytracing -gencode arch=compute_60,code=sm_60
