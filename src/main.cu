@@ -77,9 +77,9 @@ __global__ void build_scene(Hitable** obj_list,
         // random_scene(obj_list, world, state);
         // simple_light_scene(obj_list, world);
         // cornell_box_scene(obj_list, world);
-        cornell_smoke_scene(obj_list, world, state);
+        // cornell_smoke_scene(obj_list, world, state);
         // bvh_scene(obj_list, world, state);
-        // final_scene(obj_list, world, state);
+        final_scene(obj_list, world, state);
 
         vec3 lookfrom(278, 278, -800);
         vec3 lookat(278, 278, 0);
