@@ -126,6 +126,35 @@ __device__ void cornell_smoke_scene(Hitable **list,
 }
 
 
+/* Test BVH */
+__device__ void bvh_scene(Hitable **list, 
+                            Hitable **world, 
+                            curandState *state){
+    int nb = 10;
+    Hitable** boxlist1 = new Hitable*[1000];
+    Material* ground = new Lambertian(new ConstantTexture(vec3(0.48, 0.83, 0.53)));
+    
+    int b = 0;
+    for(int i = 0; i < nb; i++) {
+        for(int j = 0; j < nb; j++) {
+            float w = 100;
+            float x0 = -1000 + i*w;
+            float z0 = -1000 + j*w;
+            float y0 = 0;
+            float x1 = x0 + w;
+            float y1 = 100 * (rand(state) + 0.01);
+            float z1 = z0 + w;
+            boxlist1[b++] = new Box(vec3(x0, y0, z0), vec3(x1, y1, z1), ground);
+        }
+    }
+
+    int l = 0;
+    list[l++] = new BVHNode(boxlist1, b, 0, 1, state);
+    
+    *world = new HitableList(list, l);
+}
+
+
 /* It does not work now. BVH does not work */
 __device__ void final_scene(Hitable **list, 
                             Hitable **world, 

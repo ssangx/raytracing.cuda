@@ -4,13 +4,14 @@
 #include "ray.h"
 #include "float.h"
 
+// avoid too much sanity check
 __device__ inline float ffmin(float a, float b) {return a < b ? a : b;}
 __device__ inline float ffmax(float a, float b) {return a > b ? a : b;}
 
 
 /* axis-aligned bounding boxes */
 
-class AABB{
+class AABB {
 public:
 
     __device__ AABB() {
@@ -29,8 +30,8 @@ public:
 
     __device__ bool hit(const Ray& r, 
                         float t_min, 
-                        float t_max) const{
-        for(int a = 0; a < 3; a++){
+                        float t_max) const {
+        for(int a = 0; a < 3; a++) {
             float t0 = ffmin((_min[a] - r.origin()[a]) / r.direction()[a], 
                              (_max[a] - r.origin()[a]) / r.direction()[a]);
             float t1 = ffmax((_min[a] - r.origin()[a]) / r.direction()[a], 
@@ -55,6 +56,7 @@ public:
 };
 
 
+// Get union of two aabb, for temporary use
 __device__  AABB surrounding_box(AABB box0, AABB box1){
     vec3 small(fmin(box0.min().x(), box1.min().x()),
                fmin(box0.min().y(), box1.min().y()),
@@ -65,4 +67,5 @@ __device__  AABB surrounding_box(AABB box0, AABB box1){
     return AABB(small, big);
 }
 
-#endif // AABB_H
+
+#endif  /* AABB_H */

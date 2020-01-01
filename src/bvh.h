@@ -6,25 +6,27 @@
 #include "hitable/hitable.h"
 
 
-struct BoxCompare{
+struct BoxCompare {
     __device__ BoxCompare(int m): mode(m) {}
-    __device__ bool operator()(const void* a, const void* b) const{
+    __device__ bool operator()(Hitable* a, Hitable* b) const {
+        // return true;
+
         AABB box_left, box_right;
-        Hitable* ah = *(Hitable**)a;
-        Hitable* bh = *(Hitable**)b;
-        if(!ah->bounding_box(0, 0, box_left) || 
-           !bh->bounding_box(0, 0, box_right)){
+        Hitable* ah = a;
+        Hitable* bh = b;
+        
+        if(!ah->bounding_box(0, 0, box_left) || !bh->bounding_box(0, 0, box_right)) {
                 return false;
         }
 
-        int val1, val2;
-        if(mode == 1){
+        float val1, val2; 
+        if(mode == 1) {
             val1 = box_left.min().x();
             val2 = box_right.min().x();
-        }else if(mode == 2){
+        }else if(mode == 2) {
             val1 = box_left.min().y();
             val2 = box_right.min().y();
-        }else if(mode == 3){
+        }else if(mode == 3) {
             val1 = box_left.min().z();
             val2 = box_right.min().z();
         }
@@ -78,13 +80,13 @@ __device__ BVHNode::BVHNode(Hitable **l,
         thrust::sort(l, l + n, BoxCompare(3));
     }
 
-    if (n == 1){
+    if (n == 1) {
         left = right = l[0];
-    }else if (n == 2){
+    }else if (n == 2) {
         left  = l[0];
         right = l[1];
-    }else{
-        left  = new BVHNode(l,       n/2,     time0, time1, state);
+    }else {
+        left  = new BVHNode(      l,     n/2, time0, time1, state);
         right = new BVHNode(l + n/2, n - n/2, time0, time1, state);
     }
     

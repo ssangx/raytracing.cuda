@@ -22,7 +22,7 @@ public:
 __device__ bool HitableList::hit(const Ray& r, 
                                  float t_min, 
                                  float t_max, 
-                                 HitRecord& rec) const{
+                                 HitRecord& rec) const {
     HitRecord tmp_rec;
     bool hit_anything = false;
     double closest_so_far = t_max;
@@ -36,10 +36,12 @@ __device__ bool HitableList::hit(const Ray& r,
     return hit_anything;
 }
 
+
 __device__ bool HitableList::bounding_box(float t0, 
                                           float t1, 
                                           AABB& box) const{
     if(list_size < 1) return false;
+
     AABB tmp_box;
     bool first_true = list[0]->bounding_box(t0, t1, tmp_box);
     
@@ -50,7 +52,7 @@ __device__ bool HitableList::bounding_box(float t0,
     }
 
     for(int i = 1; i < list_size; i++){
-        if(list[0]->bounding_box(t0, t1, tmp_box)){
+        if(list[i]->bounding_box(t0, t1, tmp_box)){
             box = surrounding_box(box, tmp_box);
         }else{
             return false;

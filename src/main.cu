@@ -4,11 +4,10 @@
 
 #include "scene.h"
 
+#define RESOLUTION 1
+#define SAMPLES 1000
 
 #define checkCudaErrors(val) check_cuda((val), #val, __FILE__, __LINE__)
-
-#define RESOLUTION 1
-#define SAMPLES  100
 
 
 void check_cuda(cudaError_t result, 
@@ -77,9 +76,10 @@ __global__ void build_scene(Hitable** obj_list,
         
         // random_scene(obj_list, world, state);
         // simple_light_scene(obj_list, world);
-        cornell_box_scene(obj_list, world);
+        // cornell_box_scene(obj_list, world);
         // cornell_smoke_scene(obj_list, world);
-        // final_scene(obj_list, world, state);
+        // bvh_scene(obj_list, world, state);
+        final_scene(obj_list, world, state);
 
         vec3 lookfrom(278, 278, -800);
         vec3 lookat(278, 278, 0);

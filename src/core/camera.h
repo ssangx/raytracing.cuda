@@ -60,15 +60,15 @@ public:
 class MotionCamera: public Camera{
 public: 
     __device__ MotionCamera(vec3 lookfrom, 
-                      vec3 lookat, 
-                      vec3 vup,
-                      float vfov, 
-                      float aspect, 
-                      float aperture,   
-                      float focus_dist,
-                      float t0,
-                      float t1) : Camera(lookfrom, lookat, vup, vfov, 
-                                         aspect, aperture, focus_dist){
+                            vec3 lookat, 
+                            vec3 vup,
+                            float vfov, 
+                            float aspect, 
+                            float aperture,   
+                            float focus_dist,
+                            float t0,
+                            float t1) : Camera(lookfrom, lookat, vup, vfov, 
+                                                aspect, aperture, focus_dist){
 
         time0 = t0;
         time1 = t1;
