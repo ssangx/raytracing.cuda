@@ -5,7 +5,7 @@
 
 #include "bvh.h"
 #include "transform.h"
-#include "constant_medium.h" 
+#include "medium.h" 
 
 #include "core/ray.h"
 #include "core/vec3.h"
@@ -103,7 +103,8 @@ __device__ void cornell_box_scene(Hitable **list,
 
 /* It works */
 __device__ void cornell_smoke_scene(Hitable **list, 
-                                    Hitable **world){
+                                    Hitable **world, 
+                                    curandState *state){
     int i = 0; 
     Material* red   = new   Lambertian(new ConstantTexture(vec3(0.65, 0.05, 0.05)));
     Material* white = new   Lambertian(new ConstantTexture(vec3(0.73, 0.73, 0.73)));
@@ -119,8 +120,8 @@ __device__ void cornell_smoke_scene(Hitable **list,
 
     Hitable* b1 = new Translate(new Rotate(new Box(vec3(0, 0, 0), vec3(165, 165, 165), white), -18), vec3(130, 0,  65));
     Hitable* b2 = new Translate(new Rotate(new Box(vec3(0, 0, 0), vec3(165, 330, 165), white),  15), vec3(265, 0, 295));
-    list[i++] = new ConstantMedium(b1, 0.01, new ConstantTexture(vec3(1.0, 1.0, 1.0)));
-    list[i++] = new ConstantMedium(b2, 0.01, new ConstantTexture(vec3(0.0, 0.0, 0.0)));
+    list[i++] = new ConstantMedium(b1, 0.01, new ConstantTexture(vec3(1.0, 1.0, 1.0)), state);
+    list[i++] = new ConstantMedium(b2, 0.01, new ConstantTexture(vec3(0.0, 0.0, 0.0)), state);
     
     *world = new HitableList(list, i);
 }
@@ -155,7 +156,7 @@ __device__ void bvh_scene(Hitable **list,
 }
 
 
-/* It does not work now. BVH does not work */
+/* It works eventually*/
 __device__ void final_scene(Hitable **list, 
                             Hitable **world, 
                             curandState *state){
@@ -189,7 +190,7 @@ __device__ void final_scene(Hitable **list,
     list[l++] = new Sphere(vec3(  0, 150, 145), 50, new Metal(vec3(0.8, 0.8, 0.9), 10.0));
     Hitable* boundary = new Sphere(vec3(360, 150, 145), 70, new Dielectric(1.5));
     list[l++] = boundary;
-    list[l++] = new ConstantMedium(boundary, 0.2, new ConstantTexture(vec3(0.2, 0.4, 0.9)));
+    list[l++] = new ConstantMedium(boundary, 0.2, new ConstantTexture(vec3(0.2, 0.4, 0.9)), state);
 
     int ns = 1000;
     for(int j = 0; j < ns; j++){

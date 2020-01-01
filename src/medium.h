@@ -1,5 +1,8 @@
-#ifndef CONSTANTMEDIUMH
-#define CONSTANTMEDIUMH
+#ifndef MEDIUM_H
+#define MEDIUM_H
+
+#include <curand.h>
+#include <curand_kernel.h>
 
 #include "hitable/hitable.h"
 #include "material/material.h"
@@ -7,7 +10,8 @@
 
 class ConstantMedium: public Hitable{
 public:
-    __device__ ConstantMedium(Hitable* b, float d, Texture* a): boundary(b), density(d){
+    __device__ ConstantMedium(Hitable* b, float d, Texture* a, curandState *s): 
+    boundary(b), density(d), state(s) {
         phase_function = new Isotropic(a);
     }
     __device__ virtual bool hit(const Ray& r, 
@@ -22,6 +26,7 @@ public:
     float density;
     Hitable* boundary;
     Material* phase_function;
+    curandState* state;
 };
 
 
@@ -39,7 +44,7 @@ __device__ bool ConstantMedium::hit(const Ray& r,
             if (rec1.t < 0) rec1.t = 0;
 
             float distance_inside_boundary = (rec2.t - rec1.t) * r.direction().length();
-            float hit_distance = - (1/density); 
+            float hit_distance = - (1/density) * log(curand_uniform(state)); 
 
             if (hit_distance < distance_inside_boundary) {
                 rec.t = rec1.t + hit_distance / r.direction().length(); 
@@ -53,4 +58,4 @@ __device__ bool ConstantMedium::hit(const Ray& r,
     return false;
 }
 
-#endif
+#endif  /* MEDIUM_H */
