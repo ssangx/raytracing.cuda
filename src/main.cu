@@ -4,8 +4,8 @@
 
 #include "scene.h"
 
-#define RESOLUTION 1
-#define SAMPLES 1000
+#define RESOLUTION 2
+#define SAMPLES 5000
 
 #define checkCudaErrors(val) check_cuda((val), #val, __FILE__, __LINE__)
 
