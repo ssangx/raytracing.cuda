@@ -20,3 +20,5 @@ make
 ![](https://github.com/HelloSangShen/raytracing.cuda/blob/master/images/image1.png)
 
 ![](https://github.com/HelloSangShen/raytracing.cuda/blob/master/images/image2.png)
+
+![](https://github.com/HelloSangShen/raytracing.cuda/blob/master/images/image3.png)
