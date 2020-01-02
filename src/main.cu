@@ -1,3 +1,4 @@
+#include <ctime> 
 #include <cmath>
 #include <cstdio>
 #include <iostream>
@@ -5,7 +6,7 @@
 #include "scene.h"
 
 #define RESOLUTION 1
-#define SAMPLES 5000
+#define SAMPLES 10000
 
 #define checkCudaErrors(val) check_cuda((val), #val, __FILE__, __LINE__)
 
@@ -14,7 +15,7 @@ void check_cuda(cudaError_t result,
                 char const *const func, 
                 const char *const file, 
                 int const line) {
-    if(result){
+    if(result) {
         std::cerr << "CUDA error = "<< static_cast<unsigned int>(result) << " at " <<
         file << ":" << line << " '" << func << "' \n";
         cudaDeviceReset();
@@ -28,7 +29,7 @@ __device__ vec3 shade(const Ray& r,
                       int depth,
                       curandState *state) {
     HitRecord rec;
-    if((*world)->hit(r, 0.001, MAXFLOAT, rec)){
+    if((*world)->hit(r, 0.001, MAXFLOAT, rec)) {
         Ray scattered;
         vec3 attenuation;
         vec3 emitted = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
@@ -48,7 +49,7 @@ __device__ vec3 shade_nolight(const Ray& r,
                               int depth,
                               curandState *state) {
     HitRecord rec;
-    if((*world)->hit(r, 0.001, MAXFLOAT, rec)){
+    if((*world)->hit(r, 0.001, MAXFLOAT, rec)) {
         Ray scattered;
         vec3 attenuation;
         if(depth < 15 && rec.mat_ptr->scatter(r, rec, attenuation, scattered, state)){
@@ -121,7 +122,7 @@ __global__ void destroy(Hitable** obj_list,
                         Hitable** world,
                         Camera** camera, 
                         int obj_cnt) {
-    for(int i = 0; i < obj_cnt; i++){
+    for(int i = 0; i < obj_cnt; i++) {
         delete *(obj_list + i);
     }
     delete *world;
@@ -161,6 +162,9 @@ __global__ void render(vec3* colorBuffer,
 
 
 int main() {
+    std::time_t result = std::time(NULL);
+    std::cout << "Start running at " << std::asctime(std::localtime(&result)) << std::endl;
+
     std::freopen("images/image.ppm", "w", stdout);
 
     int nx = 1024 * RESOLUTION;
