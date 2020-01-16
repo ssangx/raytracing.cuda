@@ -12,6 +12,7 @@
 #include "core/camera.h"
 #include "shapes/box.h"
 #include "shapes/sphere.h"
+#include "shapes/triangle.h"
 #include "shapes/rectangle.h"
 #include "material/material.h"
 #include "hitable/hitable_list.h"   
@@ -198,5 +199,16 @@ __device__ void final_scene(Hitable **list,
     }
     list[l++] = new Translate(new Rotate(new BVHNode(boxlist2, ns, 0.0, 1.0, state), 15), vec3(-100, 270, 395));
     
+    *world = new HitableList(list, l);
+}
+
+
+__device__ void draw_one_triangle(Hitable **list, 
+                            Hitable **world, 
+                            curandState *state){
+    int l = 0;
+    vec3 vertices[3] = {vec3(0, 10, -10), vec3(10, -6, -10), vec3(-10, -6, -10)};
+    list[l++] = new Triangle(vertices, new DiffuseLight(new ConstantTexture(vec3(20, 20, 20))), false);
+
     *world = new HitableList(list, l);
 }

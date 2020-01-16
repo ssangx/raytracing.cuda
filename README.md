@@ -29,3 +29,4 @@ make
 
 - [x] Finish the basic functionality
 - [ ] Load arbitrary model and rendering
+    - [x] Rendering triangles

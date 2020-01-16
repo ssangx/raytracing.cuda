@@ -6,7 +6,7 @@
 #include "scene.h"
 
 #define RESOLUTION 1
-#define SAMPLES 10000
+#define SAMPLES 1000
 
 #define checkCudaErrors(val) check_cuda((val), #val, __FILE__, __LINE__)
 
@@ -52,7 +52,7 @@ __device__ vec3 shade_nolight(const Ray& r,
     if((*world)->hit(r, 0.001, MAXFLOAT, rec)) {
         Ray scattered;
         vec3 attenuation;
-        if(depth < 15 && rec.mat_ptr->scatter(r, rec, attenuation, scattered, state)){
+        if(depth < 15 && rec.mat_ptr->scatter(r, rec, attenuation, scattered, state)) {
             return attenuation * shade_nolight(scattered, world, depth + 1, state);
         }
         else {
@@ -80,19 +80,26 @@ __global__ void build_scene(Hitable** obj_list,
         // cornell_box_scene(obj_list, world);
         // cornell_smoke_scene(obj_list, world, state);
         // bvh_scene(obj_list, world, state);
-        final_scene(obj_list, world, state);
+        // final_scene(obj_list, world, state);
+        draw_one_triangle(obj_list, world, state);
 
-        vec3 lookfrom(278, 278, -800);
-        vec3 lookat(278, 278, 0);
-        float dist_to_focus = 10.0;
-        float aperture = 0.0;
-        float vfov = 40.0;
+        // vec3 lookfrom(278, 278, -800);
+        // vec3 lookat(278, 278, 0);
+        // float dist_to_focus = 10.0;
+        // float aperture = 0.0;
+        // float vfov = 40.0;
 
         // vec3 lookfrom(13, 2, 3);
         // vec3 lookat(0, 0, 0);
         // float dist_to_focus = 10.0;
         // float aperture = 0.0;
         // float vfov = 20.0;
+
+        vec3 lookfrom(0, 0, 20);
+        vec3 lookat(0, 0, 0);
+        float dist_to_focus = 10.0;
+        float aperture = 0.0;
+        float vfov = 60.0;
 
         *camera = new MotionCamera(lookfrom, 
                                 lookat, 
@@ -226,4 +233,8 @@ int main() {
     checkCudaErrors(cudaFree(colorBuffer));
 
     cudaDeviceReset();
+
+    std::fclose(stdout);
+    std::cout << "Finish running at " << std::asctime(std::localtime(&result)) << std::endl;
 }
+
