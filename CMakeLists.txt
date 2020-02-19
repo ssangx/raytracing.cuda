@@ -5,6 +5,7 @@ find_package(CUDA REQUIRED)
 
 # set gcc version
 set(CMAKE_CXX_STANDARD 11)
+
 # set nvcc compiler
 set(CUDA_NVCC_FLAGS -gencode arch=compute_60,code=sm_60;-G;-g)
 

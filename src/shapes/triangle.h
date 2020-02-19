@@ -10,10 +10,12 @@ class Triangle: public Hitable {
 public:
     __device__ Triangle() : EPSILON(0.00001) {}
     __device__ Triangle(vec3 vs[3], Material* mat, const bool cull=false) : 
-                            material(mat), backCulling(cull), EPSILON(0.00001) {
+                        EPSILON(0.000001) {
         for(int i = 0; i < 3; i++) {
             vertices[i] = vs[i];
         }
+        material = mat;
+        backCulling = cull;
     };
 
     __device__ virtual bool hit(const Ray& r, 

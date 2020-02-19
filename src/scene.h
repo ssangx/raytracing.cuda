@@ -9,8 +9,9 @@
 
 #include "core/ray.h"
 #include "core/vec3.h"
-#include "core/camera.h"
+#include "mesh/mesh.h"
 #include "shapes/box.h"
+#include "core/camera.h"
 #include "shapes/sphere.h"
 #include "shapes/triangle.h"
 #include "shapes/rectangle.h"
@@ -130,8 +131,8 @@ __device__ void cornell_smoke_scene(Hitable **list,
 
 /* Test BVH */
 __device__ void bvh_scene(Hitable **list, 
-                            Hitable **world, 
-                            curandState *state){
+                          Hitable **world, 
+                          curandState *state){
     int nb = 10;
     Hitable** boxlist1 = new Hitable*[1000];
     Material* ground = new Lambertian(new ConstantTexture(vec3(0.48, 0.83, 0.53)));
@@ -160,7 +161,7 @@ __device__ void bvh_scene(Hitable **list,
 /* It works eventually*/
 __device__ void final_scene(Hitable **list, 
                             Hitable **world, 
-                            curandState *state){
+                            curandState *state) {
     int nb = 20;
     Hitable** boxlist1 = new Hitable*[1000];
     Hitable** boxlist2 = new Hitable*[1000];
@@ -204,11 +205,71 @@ __device__ void final_scene(Hitable **list,
 
 
 __device__ void draw_one_triangle(Hitable **list, 
-                            Hitable **world, 
-                            curandState *state){
+                                  Hitable **world, 
+                                  curandState *state) {
     int l = 0;
     vec3 vertices[3] = {vec3(0, 10, -10), vec3(10, -6, -10), vec3(-10, -6, -10)};
-    list[l++] = new Triangle(vertices, new DiffuseLight(new ConstantTexture(vec3(20, 20, 20))), false);
+    Material* mat = new DiffuseLight(new ConstantTexture(vec3(0.4, 0.7, 0.5)));
+
+    list[l++] = new Triangle(vertices, mat, false);
 
     *world = new HitableList(list, l);
+}
+
+
+__device__ void draw_one_mesh(Hitable** mesh, 
+                              Hitable** triangles,
+                              vec3* points,
+                              vec3* idxVertex,
+                              int np, int nt,
+                              curandState *state) {
+
+    Material* mat = new Metal(vec3(0.4, 0.7, 0.5), 0.5f*rand(state));
+
+    int l = 0;
+    for (int i = 0; i < nt; i++) {
+        vec3 idx = idxVertex[i];
+        vec3 v[3] = {points[int(idx[2])], points[int(idx[1])], points[int(idx[0])]};
+        triangles[l++] = new Triangle(v, mat, true);
+    }
+
+    *mesh = new HitableList(triangles, l);
+}
+
+/* It works */
+__device__ void bunny_inside_cornell_box(Hitable** world,
+                                         Hitable** list,
+                                         vec3* points,
+                                         vec3* idxVertex,
+                                         int np, int nt,
+                                         curandState *state){
+    int i = 0; 
+    Material* red   = new   Lambertian(new ConstantTexture(vec3(0.65, 0.05, 0.05)));
+    Material* white = new   Lambertian(new ConstantTexture(vec3(0.73, 0.73, 0.73)));
+    Material* green = new   Lambertian(new ConstantTexture(vec3(0.12, 0.45, 0.15)));
+    Material* light = new DiffuseLight(new ConstantTexture(vec3(  15,   15,   15)));
+
+    Material* diele = new Dielectric(0.5);
+    Material* metal = new Metal(vec3(0.7, 0.6, 0.5), 0.3);
+
+    list[i++] = new FlipNormals(new RectangleYZ(  0, 555,   0, 555, 555, green));
+    list[i++] =                (new RectangleYZ(  0, 555,   0, 555,   0,   red));
+    list[i++] =                (new RectangleXZ(213, 343, 227, 332, 554, light));
+    list[i++] = new FlipNormals(new RectangleXZ(  0, 555,   0, 555, 555, white));
+    list[i++] =                (new RectangleXZ(  0, 555,   0, 555,   0, white));
+    list[i++] = new FlipNormals(new RectangleXY(  0, 555,   0, 555, 555, white));
+
+    list[i++] = new Translate(new Rotate(new Box(vec3(0, 0, 0), vec3(165, 165, 165), metal), -18), vec3(130, 0,  65));
+    list[i++] = new Translate(new Rotate(new Box(vec3(0, 0, 0), vec3(165, 330, 165), diele),  18), vec3(265, 0, 295));
+    
+    Material* bunny = new Metal(vec3(0.4, 0.7, 0.5), 0.5f*rand(state));
+
+    int l = 0;
+    for (int i = 0; i < nt; i++) {
+        vec3 idx = idxVertex[i];
+        vec3 v[3] = {points[int(idx[2])], points[int(idx[1])], points[int(idx[0])]};
+        list[l++] = new Triangle(v, bunny, true);
+    }
+
+    *world = new HitableList(list, i);
 }
