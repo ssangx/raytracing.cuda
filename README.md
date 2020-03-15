@@ -25,6 +25,10 @@ make
 ![](https://github.com/HelloSangShen/raytracing.cuda/blob/master/images/image3.png)
 
 
+A low resolution result for mesh rendering:
+![](https://github.com/HelloSangShen/raytracing.cuda/blob/master/images/image4.png)
+
+
 ## Todo List
 
 - [x] Finish the basic functionality

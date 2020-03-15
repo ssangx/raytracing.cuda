@@ -2,6 +2,7 @@ run.sh
 images/image.ppm
 
 build/
+backups/
 
 cpp/.idea
 cpp/cmake-build-debug
