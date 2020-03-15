@@ -26,7 +26,7 @@ make
 
 A low resolution result for mesh rendering:
 <p align="center">
-  <img width="800" height="1000" src="https://github.com/HelloSangShen/raytracing.cuda/blob/master/images/image4.png">
+  <img width="533" height="667" src="https://github.com/HelloSangShen/raytracing.cuda/blob/master/images/image4.png">
 </p>
 
 
