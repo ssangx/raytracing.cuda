@@ -24,9 +24,10 @@ make
 
 ![](https://github.com/HelloSangShen/raytracing.cuda/blob/master/images/image3.png)
 
-
 A low resolution result for mesh rendering:
-![](https://github.com/HelloSangShen/raytracing.cuda/blob/master/images/image4.png)
+<p align="center">
+  <img width="460" height="300" src="https://github.com/HelloSangShen/raytracing.cuda/blob/master/images/image4.png">
+</p>
 
 
 ## Todo List
