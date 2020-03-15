@@ -1,7 +1,10 @@
-cpp/
+run.sh
+images/image.ppm
 
 build/
 
-run.sh
+cpp/.idea
+cpp/cmake-build-debug
+cpp/images
 
-images/image.ppm
+matmul.cu

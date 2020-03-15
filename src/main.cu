@@ -4,11 +4,11 @@
 #include <fstream>
 #include <iostream>
 
-#include "scene.h"
+#include "test_scene.h"
 #include "mesh/obj_loader.h"
 #include "material/material.h"
 
-#define RESOLUTION 0.5
+#define RESOLUTION 1
 #define SAMPLES 100
 
 #define checkCudaErrors(val) check_cuda((val), #val, __FILE__, __LINE__)
@@ -107,7 +107,7 @@ __global__ void build_mesh(Hitable** mesh,
         draw_one_mesh(mesh, triangles, points, idxVertex, np, nt, state);
         // bunny_inside_cornell_box(mesh, triangles, points, idxVertex, np, nt, state);
 
-        vec3 lookfrom(0, 0, 100);
+        vec3 lookfrom(0, 0, 10);
         vec3 lookat(0, 0, 0);
         float dist_to_focus = 10.0;
         float aperture = 0.0;
@@ -181,7 +181,7 @@ __global__ void render(vec3* colorBuffer,
 
 int main() {
     std::time_t tic = std::time(NULL);
-    std::cout << "Start running at " << std::asctime(std::localtime(&tic)) << std::endl;
+    std::cout << "Start running at: " << std::asctime(std::localtime(&tic)) << std::endl;
 
     std::ofstream imgWrite("images/image.ppm");
 
@@ -219,7 +219,7 @@ int main() {
     vec3* idxVertex;
 
     // NOTE: must pre-allocate before initialize the elements
-    checkCudaErrors(cudaMallocManaged((void**)& points,    3000 * sizeof(vec3)));
+    checkCudaErrors(cudaMallocManaged((void**)& points,    2600 * sizeof(vec3)));
     checkCudaErrors(cudaMallocManaged((void**)& idxVertex, 5000 * sizeof(vec3)));
 
     int nPoints, nTriangles;
@@ -229,11 +229,8 @@ int main() {
     std::cout << "# of triangles: " << nTriangles << std::endl;
 
     // scale
-    for(int i = 0; i < nPoints; i++) { points[i] *= 50.0; }
-
-    vec3 idx = idxVertex[0];
-    vec3 v[3] = {points[int(idx[0])], points[int(idx[1])], points[int(idx[2])]};
-    std::cout << v[0] << " " << v[1] << " " << v[2] << std::endl;
+    for(int i = 0; i < nPoints; i++) { points[i] *= 30.0; }
+    for(int i = 0; i < nPoints; i++) { std::cout << points[i] << std::endl; }
 
     Hitable** triangles;
     checkCudaErrors(cudaMallocManaged((void**)& triangles, nTriangles * sizeof(Hitable*)));
@@ -272,7 +269,7 @@ int main() {
     cudaDeviceReset();
 
     std::time_t toc = std::time(NULL);
-    std::cout << "Finish running at " << std::asctime(std::localtime(&toc)) << std::endl;
-    std::cout << "Time consuming " << toc - tic << std::endl;
+    std::cout << "Finish running at: " << std::asctime(std::localtime(&toc)) << std::endl;
+    std::cout << "Time consuming: " << toc - tic << "s" << std::endl;
 }
 

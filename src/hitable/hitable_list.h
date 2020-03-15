@@ -27,7 +27,8 @@ __device__ bool HitableList::hit(const Ray& r,
     bool hit_anything = false;
     double closest_so_far = t_max;
     for(int i = 0; i < list_size; i ++){
-         if(list[i]->hit(r, t_min, closest_so_far, tmp_rec)){ 
+        if(list[i]->hit(r, t_min, closest_so_far, tmp_rec) && tmp_rec.t < closest_so_far){ 
+        // if(list[i]->hit(r, t_min, closest_so_far, tmp_rec)){  // origin one, maybe bug existing
             hit_anything = true;
             closest_so_far = tmp_rec.t;
             rec = tmp_rec;

@@ -83,7 +83,16 @@ __device__ bool Triangle::hit(const Ray& r,
 
 __device__ bool Triangle::bounding_box(float t0,
                                        float t1,
-                                       AABB& box) const {
+                                       AABB& bbox) const {
+    float minX = min(vertices[0][0], min(vertices[1][0], vertices[2][0]));
+    float minY = min(vertices[0][1], min(vertices[1][1], vertices[2][1]));
+    float minZ = min(vertices[0][2], min(vertices[1][2], vertices[2][2]));
+
+    float maxX = max(vertices[0][0], max(vertices[1][0], vertices[2][0]));
+    float maxY = max(vertices[0][1], max(vertices[1][1], vertices[2][1]));
+    float maxZ = max(vertices[0][2], max(vertices[1][2], vertices[2][2]));
+
+    bbox = AABB(vec3(minX, minY, minZ), vec3(maxX, maxY, maxZ));
     return true;
 }
 

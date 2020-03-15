@@ -55,6 +55,11 @@ void parseObjByName(std::string fn,
                 // ss >> normal[0] >> normal[1] >> normal[2];
                 // normals[nn++] = normal;
             } else if (label == "f"){
+                // read small bunny
+
+                vec3 idx;
+                ss >> idx[0] >> idx[1] >> idx[2];
+                idxVertex[nt++] = idx;
                 // read normals
                 // std::string p1, p2, p3;
                 // ss >> p1 >> p2 >> p3;
@@ -65,12 +70,12 @@ void parseObjByName(std::string fn,
                 // face[2] = parseFaceIndex(p3);
 
                 // idxVertex[nt] = vec3(face[0].first,  face[1].first,  face[2].first);
-                // idxNormal[nt] = vec3(face[0].second, face[1].second, face[2].second);
+                // // idxNormal[nt] = vec3(face[0].second, face[1].second, face[2].second);
                 // nt ++;
 
-                vec3 idx;
-                ss >> idx[0] >> idx[1] >> idx[2];
-                idxVertex[nt++] = idx;
+                // vec3 idx;
+                // ss >> idx[0] >> idx[1] >> idx[2];
+                // idxVertex[nt++] = idx;
             }
         }
     } else {
@@ -81,7 +86,7 @@ void parseObjByName(std::string fn,
     nTriangles = nt;
     vec3 mean = computeMean(points, np);
     centering(points, mean, np);
-    scaling(points, mean, np);
+    // scaling(points, mean, np);
 
     // float x = FLT_MIN, y = FLT_MIN, z = FLT_MIN;
     // for(int i = 0; i < np; i++) {
@@ -114,7 +119,6 @@ vec3 computeMean(vec3* points, int np) {
     for(int i = 0; i < np; i++) {
         mean += points[i];
     }
-    // std::cout << mean / float(np) << std::endl;
     return mean / float(np);
 }
 

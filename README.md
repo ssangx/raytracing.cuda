@@ -28,6 +28,8 @@ make
 ## Todo List
 
 - [x] Finish the basic functionality
-- [ ] Load arbitrary model and rendering
+- [x] Load arbitrary model and rendering
     - [x] Rendering triangles
     - [x] Rendering mesh
+- [ ] Load scene from xml file
+- [ ] Monte Carlo integration
