@@ -1,20 +1,5 @@
-#ifndef OBJ_PARSER_H
-#define OBJ_PARSER_H
+#include "objLoader.h"
 
-#include <vector>
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <fstream>
-
-#include "vec3.h"
-
-
-vec3 computeMean(const std::vector<vec3>& points);
-void centering(std::vector<vec3>& points, vec3& mean);
-void scaling(std::vector<vec3>& points, vec3& mean);
-
-std::pair<int, int> parseFaceIndex (std::string str);
 
 void parseObjByName(const std::string fn,
                     std::vector<vec3>& points,
@@ -68,6 +53,7 @@ void parseObjByName(const std::string fn,
     }
 }
 
+
 std::pair<int, int> parseFaceIndex (std::string str) {
     std::stringstream ss(str);
     std::vector<std::string> ret;
@@ -78,32 +64,3 @@ std::pair<int, int> parseFaceIndex (std::string str) {
     }
     return std::make_pair<int, int>(int(std::stoi(ret[0])), std::stoi(ret[2]));
 }
-
-vec3 computeMean(const std::vector<vec3>& points) {
-    vec3 mean(0, 0, 0);
-    for(vec3 pt: points)
-        mean += pt;
-    return mean / float(points.size());
-}
-
-
-void centering(std::vector<vec3>& points, vec3& mean) {
-    for(int i = 0; i < points.size(); i++)
-        points[i] -= mean;
-}
-
-
-void scaling(std::vector<vec3>& points, vec3& mean) {
-    float max_dis = 0;
-
-    for(vec3 pt: points){
-        float dis = (pt - mean).length();
-        if(dis > max_dis) max_dis = dis;
-    }
-
-    for(int i = 0; i < points.size(); i++)
-        points[i] /= max_dis;
-}
-
-
-#endif /* OBJ_PARSER_H */

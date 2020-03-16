@@ -46,32 +46,28 @@ int main() {
     std::string prefix = "/home/ssang/Main/Experiment/Raytracing/cpp";
     std::ofstream imgWrite(prefix + "/images/image.ppm");
 
-    int nx = 1000;
-    int ny = 500;
-    int ns = 1000;
+    int nx = 800;
+    int ny = 1000;
+    int ns = 200;
     imgWrite << "P3\n" << nx << " " << ny <<"\n255\n";
 
-    std::string fileName(prefix + "/data/meshes/bunny.obj");
+    Context ctx;
+    ctx.xml_file = prefix + "/data/scenes/cornell_bunny.xml";
+    ctx.root = prefix;
+    ctx.sample = ns;
+    ctx.height = ny;
+    ctx.width  = nx;
 
-    Hitable* scene = new Scene(fileName);
-
-    vec3 lookFrom(278, 278, -800);
-    vec3 lookAt(278, 278, 0);
-
-    float dist_to_focus = 10.0;
-    float aperture = 0.0;
-    float vfov = 60.0;
-    Camera cam(lookFrom, lookAt, vec3(0, -1, 0), vfov, float(nx)/float(ny),
-               aperture, dist_to_focus, 0.0, 1.0);
+    Scene* scene = new Scene(ctx);
 
     const float gamma = 1 / 2.2;
-    for(int j = 0; j < ny; j ++){
-        for(int i = 0; i < nx; i ++){
+    for(int j = 0; j < ny; j ++) {
+        for(int i = 0; i < nx; i ++) {
             vec3 col(0, 0, 0);
-            for(int s = 0; s < ns; s++){
+            for(int s = 0; s < ns; s++) {
                 float u = float(i + drand48()) / float(nx);
                 float v = float(j + drand48()) / float(ny);
-                Ray r = cam.castRay(u, v);
+                Ray r = scene->camera->castRay(u, v);
                 col += shade(r, scene, 0);
             }
             col /= float(ns);

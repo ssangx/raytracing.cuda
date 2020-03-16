@@ -1,22 +1,5 @@
-#ifndef TRANSFORM_H
-#define TRANSFORM_H
+#include "transform.h"
 
-#include "hitable.h"
-#include <float.h>
-
-/**
- * Tanslate
- */
-class Translate: public Hitable{
-public:
-    Translate(Hitable* p, const vec3& displacement): ptr(p), offset(displacement) {}
-
-    virtual bool hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const;
-    virtual bool bounding_box(float t0, float t1, AABB& box) const;
-
-    Hitable* ptr;
-    vec3 offset;
-};
 
 bool Translate::hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const{
     Ray moved_r(r.origin() - offset, r.direction(), r.time());
@@ -27,8 +10,8 @@ bool Translate::hit(const Ray& r, float t_min, float t_max, HitRecord& rec) cons
     return false;
 }
 
-bool Translate::bounding_box(float t0, float t1, AABB& box) const{
-    if(ptr->bounding_box(t0, t1, box)){
+bool Translate::bounding_box(AABB& box) const{
+    if(ptr->bounding_box(box)){
         box = AABB(box.min() + offset, box.max() + offset);
         return true;
     }
@@ -36,31 +19,11 @@ bool Translate::bounding_box(float t0, float t1, AABB& box) const{
 }
 
 
-/**
- * Rotation
- */
-class Rotate: public Hitable{
-public:
-    Rotate(Hitable* p, float angle);
-    virtual bool hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const;
-    virtual bool bounding_box(float t0, float t1, AABB& box) const{
-        box = bbox;
-        return hasbox;
-    }
-
-    float sin_theta;
-    float cos_theta;
-    bool hasbox;
-    AABB bbox;
-    Hitable* ptr;
-};
-
-
 Rotate::Rotate(Hitable* p, float angle): ptr(p){
     float radians = (M_PI / 180.) * angle;
     sin_theta = sin(radians);
     cos_theta = cos(radians);
-    hasbox = ptr->bounding_box(0, 1, bbox);
+    hasbox = ptr->bounding_box(bbox);
     vec3 min( FLT_MAX,  FLT_MAX,  FLT_MAX);
     vec3 max(-FLT_MAX, -FLT_MAX, -FLT_MAX);
     for(int i = 0; i < 2; i ++){
@@ -103,6 +66,3 @@ bool Rotate::hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const{
     }
     return false;
 }
-
-
-#endif

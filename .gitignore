@@ -7,5 +7,6 @@ backups/
 cpp/.idea
 cpp/cmake-build-debug
 cpp/images
+cpp/unused
 
 matmul.cu

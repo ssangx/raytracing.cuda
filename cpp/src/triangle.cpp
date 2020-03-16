@@ -1,45 +1,19 @@
-#ifndef TRIANGLE_H
-#define TRIANGLE_H
 
-#include "hitable.h"
-#include <iostream> 
+#include "triangle.h"
 
-// Triangle primitive
 
-class Triangle: public Hitable{
-public:
-    Triangle() : EPSILON(0.0000001) {}
-
-    Triangle(vec3 vs[3],
-             vec3 n[3],
-             Material* mat,
-             const bool cull=false) : material(mat), backCulling(cull), EPSILON(0.00001) {
-        for(int i = 0; i < 3; i++)  vertices[i] = vs[i];
-        for(int i = 0; i < 3; i++)  normals[i] = n[i];
-    };
-
-    virtual bool hit(const Ray& r, 
-                     float t_min, 
-                     float t_max, 
-                     HitRecord& rec) const;
-
-    virtual bool bounding_box(float t0,
-                              float t1,
-                              AABB& box) const;
-
-    const float EPSILON;
-
-    vec3 vertices[3];
-    vec3 normals[3];
-
-    bool backCulling;
-    Material* material;
+Triangle::Triangle(vec3 vs[3],
+                   vec3 n[3],
+                   Material* mat,
+                   const bool cull) : material(mat), backCulling(cull), EPSILON(0.00001) {
+    for(int i = 0; i < 3; i++)  vertices[i] = vs[i];
+    for(int i = 0; i < 3; i++)  normals[i] = n[i];
 };
 
 
-bool Triangle::hit(const Ray& r, 
-                   float t_min, 
-                   float t_max, 
+bool Triangle::hit(const Ray& r,
+                   float t_min,
+                   float t_max,
                    HitRecord& rec) const {
 
     // Möller –Trumbore intersection algorithm for triangle
@@ -99,10 +73,7 @@ bool Triangle::hit(const Ray& r,
 }
 
 
-
-bool Triangle::bounding_box(float t0,
-                            float t1,
-                            AABB& bbox) const {
+bool Triangle::bounding_box(AABB& bbox) const {
     float minX = std::min(vertices[0][0], std::min(vertices[1][0], vertices[2][0]));
     float minY = std::min(vertices[0][1], std::min(vertices[1][1], vertices[2][1]));
     float minZ = std::min(vertices[0][2], std::min(vertices[1][2], vertices[2][2]));
@@ -119,6 +90,3 @@ bool Triangle::bounding_box(float t0,
     bbox = AABB(vec3(minX, minY, minZ), vec3(maxX, maxY, maxZ));
     return true;
 }
-
-
-#endif /* TRIANGLE_H */

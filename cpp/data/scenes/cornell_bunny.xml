@@ -1,0 +1,62 @@
+<Scene>
+	<!-- Materials for walls -->
+	<Material id="red"   type="Lambertian">
+		<color r="0.65" g="0.05" b="0.05" />
+	</Material>
+	<Material id="white" type="Lambertian">
+		<color r="0.73" g="0.73" b="0.73" />
+	</Material>
+	<Material id="green" type="Lambertian">
+		<color r="0.12" g="0.45" b="0.15" />
+	</Material>
+
+	<!-- Materials for objects -->
+	<Material id="diele" type="Dielectric" ri="0.5">
+		<color r="0" g="0" b="0" />
+	</Material>
+
+	<Material id="metal" type="Metal" fuzz="0.3">
+		<color r="0.12" g="0.45" b="0.15" />
+	</Material>
+
+	<!-- Light source -->
+	<Material id="light" type="DiffuseLight" intensity="15">
+		<color r="1" g="1" b="1" />
+	</Material>
+
+	<!-- Walls -->
+	<Primitive type="RectangleYZ" material_id="green" flip="true">
+		<params a="0" b="555" c="0" d="555" e="555" />
+	</Primitive>
+	<Primitive type="RectangleYZ" material_id="red"   flip="false">
+		<params a="0" b="555" c="0" d="555" e="0" />
+	</Primitive>
+	<Primitive type="RectangleXZ" material_id="white" flip="true">
+		<params a="0" b="555" c="0" d="555" e="555" />
+	</Primitive>
+	<Primitive type="RectangleXZ" material_id="white" flip="false">
+		<params a="0" b="555" c="0" d="555" e="0" />
+	</Primitive>
+	<Primitive type="RectangleXY" material_id="white" flip="true">
+		<params a="0" b="555" c="0" d="555" e="555" />
+	</Primitive>
+
+	<Primitive type="RectangleXZ" material_id="light" flip="false">
+		<params a="200" b="360" c="215" d="360" e="554" />
+	</Primitive>
+
+
+	<!-- Objects in scene -->
+	<Geometry type="Mesh" material_id="metal" file_path="/data/meshes/bunny.obj" scale="100.0">
+		<translate x="348" y="128" z="400"/>
+		<rotate x="0" y="180" z="0"/>
+	</Geometry>
+
+	<!-- Camera -->
+	<Camera type="Camera" dist_to_focus="10.0" aperture="0.0" vfov="60.0">
+		<lookFrom x="278" y="278" z="-800"/>
+		<lookAt x="278" y="278" z="0"/>
+		<up x="0" y="-1" z="0"/>
+	</Camera>
+
+</Scene>
