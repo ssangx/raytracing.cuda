@@ -36,5 +36,5 @@ A low resolution result for mesh rendering:
 - [x] Load arbitrary model and rendering
     - [x] Rendering triangles
     - [x] Rendering mesh
-- [ ] Load scene from xml file
+- [x] Load scene from xml file
 - [ ] Monte Carlo integration
