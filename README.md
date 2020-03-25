@@ -37,4 +37,4 @@ A low resolution result for mesh rendering:
     - [x] Rendering triangles
     - [x] Rendering mesh
 - [x] Load scene from xml file
-- [ ] Advanced sampling
+- [ ] Importance sampling
